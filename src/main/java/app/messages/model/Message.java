@@ -12,10 +12,23 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * 엔티티 파일 생성하기
+ *
+ * 1. @Entity 으로 엔티티 클래스 선언하기
+ * 2. @Table 으로 매핑할 테이블 명시하기
+ * 3. 필드와 hashcode, equals 구현하기
+ * */
 @Entity
 @Table(name = "messages")
 public class Message {
-
+  /**
+   * 키 생성하기
+   *
+   * 1. @Id 으로 명시하기
+   * 2. @GeneratedValue(strategy = GenerationType.IDENTITY) 으로 식별자임을 알리기
+   * 3. @Column(name = "id", nullable = false) 으로 컬럼 속성 정의하기
+   * */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
@@ -41,6 +54,9 @@ public class Message {
     this.createdDate = new Date();
   }
 
+  /**
+   * setter 대신 getter와 생성자만 제공
+   * */
   public Message(Integer id, String text) {
     this.id = id;
     this.text = text;
@@ -66,6 +82,9 @@ public class Message {
     this.createdDate = createdDate;
   }
 
+  /**
+   * 자동 생성한 equals와 hashCode 자동 생성으로 생성하기
+   * */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

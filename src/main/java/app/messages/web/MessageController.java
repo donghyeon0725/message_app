@@ -10,6 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 컨트롤러 생성하기
+ *
+ * 1. @Controller
+ * 2. 받을 서비스로 생성자 생성하기
+ * 3. api (json 등등) 데이터로 통신할 경우 @ResponseBody 태그 필요. url은 별도 api 로 구분. 값을 반환할 때는 ResponseEntity 으로 한다.
+ * 4. api 형식으로 온 통신은 @RequestBody 으로 받는다.
+ * 4. GetMapping(조회), PostMapping(삽입), PutMapping(수정), DeleteMapping(삭제)
+ * */
 @Controller
 public class MessageController {
 
@@ -47,20 +56,20 @@ public class MessageController {
     return ResponseEntity.ok(saved);
   }
 
-  @DeleteMapping("/api/messages")
+  @PutMapping("/api/messages")
   @ResponseBody
-  public ResponseEntity<Message> deleteMessage(@RequestBody MessageData data) {
-    Message saved = messageService.delete(data.getId());
+  public ResponseEntity<Message> putMapping(@RequestBody MessageData data) {
+    Message saved = messageService.update(data.getId(), data.getText());
     if (saved == null) {
       return ResponseEntity.status(500).build();
     }
     return ResponseEntity.ok(saved);
   }
 
-  @PutMapping("/api/messages")
+  @DeleteMapping("/api/messages")
   @ResponseBody
-  public ResponseEntity<Message> putMapping(@RequestBody MessageData data) {
-    Message saved = messageService.update(data.getId(), data.getText());
+  public ResponseEntity<Message> deleteMessage(@RequestBody MessageData data) {
+    Message saved = messageService.delete(data.getId());
     if (saved == null) {
       return ResponseEntity.status(500).build();
     }

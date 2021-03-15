@@ -11,6 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.filter.GenericFilterBean;
 
+/**
+ * 필터 생성하기
+ *
+ * 1. GenericFilterBean 를 상속 받는다.
+ * 2. 설정 class 에서 설정 빈에 등록한다.
+ * 3. doFilter 를 오버라이드 한다.
+ * 4. chain.doFilter 를 호출한다.
+ * */
 public class AuditingFilter extends GenericFilterBean {
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)

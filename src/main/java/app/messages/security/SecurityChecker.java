@@ -8,6 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * @Aspect 컴포넌트로 등록
+ * @Component 으로 스캔
+ *
+ * 1. Aspect 모듈로 등록
+ * 2. 포인트컷 정하기 => 선택할 메소드를 한번에 표현식으로 선택
+ *        - 또는 어노테이션을 만든 다음 어노테이션만 선택 가능
+ * 3. @Before, @After, @Around 어노테이션 등등으로 조인포인트(실행시점) 정하기
+ * */
 @Aspect
 @Component
 public class SecurityChecker {
