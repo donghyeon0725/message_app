@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Messages App</title>
+  <style>
+    [v-cloak] {display: none;}
+    body > div {width: 500px; margin: 0 auto;}
+    textarea {width: 100%;}
+    ul {padding: 0 15px;}
+  </style>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <message-list :items="messages" @delete="deleteMessage" @update="updateMessage"></message-list>
+    <form @submit.prevent="addMessage">
+      <textarea id="newMessage" v-model="newMessage" placeholder="Leave a message" v-focus></textarea>
+      <div>
+          <button :disabled="addDisabled" type="submit">Add</button>
+      </div>
+    </form>
+  </div>
+  <script src="../vue.js"></script>
+  <script src="../axios.v0.18.0.min.js"></script>
+  <script type="module">
+    import MessageList from './components/MessageList.js'
+    import LifecycleLogger from './plugins/lifecycle-logger.plugin.js'
+    import './directives/focus.directive.js'
+    import './filters/datetime.filter.js'
+
+    Vue.use(LifecycleLogger, {beforeMount: false})
+
+    // 모듈을 window 에 밖아 놓은 이유는..?
+
+    window.vm = new Vue({
+      el: '#app',
+      name: 'MessagesApp',
+      data: {
+        messages: [],
+        newMessage: ''
+      },
+      computed: {
+        addDisabled () {
+          return this.messages.length >= 10 || this.newMessage.length > 50
+        }
+      },
+      components: {
+        MessageList
+      },
+      created () {
+        axios.get('api/messages?_=' + new Date().getTime())
+        .then((response) => {
+          this.messages = response.data
+        })
+        .catch((error) => {
+          console.log('Failed to get messages' + error);
+        });
+      },
+      methods: {
+        addMessage (event) {
+          if (!this.newMessage) return
+
+          axios.post('api/messages', {text: this.newMessage})
+          .then((response) => {
+            this.messages.push(response.data)
+            this.newMessage = ''
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        },
+        deleteMessage (message) {
+            axios.delete('api/messages', {
+                data: {
+                    id: message.id
+                },
+                withCredentials: true
+            })
+            .then((response) => {
+                this.messages.splice(this.messages.indexOf(message), 1)
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
+        },
+        updateMessage (message) {
+            axios.put('api/messages', this.messages.find(e => e.id == message.id))
+            .then((response) => {
+                console.log("업데이트 완료");
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        }
+      }
+    })
+
+      setInterval(() => {
+          console.log(window.vm.$data) // => $data 라는 별도 저장 공간에 _data를 바라보고 있는 인스턴스가 가득하다.
+      }, 5000);
+  </script>
+</body>
+</html>
